@@ -1,0 +1,19 @@
+openapi: 3.0.0
+info:
+  title: Deejay Room API
+  version: 1.0.0
+
+paths:
+  /tracks:
+    get:
+      summary: Get all tracks
+      responses:
+        '200':
+          description: OK
+
+  /login:
+    post:
+      summary: User login
+      responses:
+        '200':
+          description: Success
