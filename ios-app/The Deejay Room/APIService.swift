@@ -6,7 +6,7 @@ class APIService {
     
     func searchAlbums(query: String) async throws -> [Album] {
         
-        let baseURL = "http://10.41.97.76:8080"
+        let baseURL = "http://localhost:8080"
         
         var components = URLComponents(string: "\(baseURL)/api/discogs/search")!
         components.queryItems = [URLQueryItem(name: "query", value: query)]
