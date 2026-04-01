@@ -53,6 +53,61 @@ class APIService {
         return []
     }
 
-    func saveFavoriteAlbum(album: Album) async throws {
+    func saveFavoriteAlbum(album: Album) async throws -> Bool {
+        let urlString = "\(baseURL)/api/favorites"
+        guard let url = URL(string: urlString) else {
+            throw URLError(.badURL)
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        var body = [String: Any]()
+        body["discogsId"] = album.id
+        body["title"] = album.title
+        body["artist"] = album.artist
+        body["year"] = Int(album.year) ?? 0
+        body["imageUrl"] = album.thumbUrl
+        
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        
+        let(_, response) = try await URLSession.shared.data(for: request)
+        
+        if let httpResponse = response as? HTTPURLResponse {
+                return httpResponse.statusCode == 200
+            }
+        return false
+    }
+    
+    func isFavorited(discogsId: String) async throws -> Bool {
+        let urlString = "\(baseURL)/api/favorites/\(discogsId)/exists"
+        guard let url = URL(string: urlString) else {
+            throw URLError(.badURL)
+        }
+        
+        let (data, _) = try await URLSession.shared.data(from: url)
+        
+        if let result = try JSONSerialization.jsonObject(with: data) as? Bool {
+            return result
+        }
+        return false
+    }
+    
+    func removeFavorite(discogsId: String) async throws -> Bool {
+        let urlString = "\(baseURL)/api/favorites/\(discogsId)"
+        guard let url = URL(string: urlString) else {
+            throw URLError(.badURL)
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        
+        let(_, response) = try await URLSession.shared.data(for: request)
+        
+        if let httpResponse = response as? HTTPURLResponse {
+            return httpResponse.statusCode == 204
+        }
+        return false
     }
 }
