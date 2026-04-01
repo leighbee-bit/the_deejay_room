@@ -1,0 +1,16 @@
+# Config
+Config.swift
+
+# Xcode
+xcuserdata/
+DerivedData/
+*.xcuserstate
+
+# IntelliJ
+.idea/
+*.iml
+out/
+build/
+
+# macOS
+.DS_Store
