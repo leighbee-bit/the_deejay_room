@@ -97,10 +97,19 @@ struct AlbumDetailView: View {
             }
             .navigationTitle(album.title)
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        NavigationLink(destination: FavoritesView()) {
+                            Image(systemName: "heart.fill")
+                                .foregroundStyle(Color(hex: "#9b7fc0"))
+                        }
+                    }
+                }
             .task {
                 await checkIfFavorited()
             }
         }
+
         
         func checkIfFavorited() async {
             do {

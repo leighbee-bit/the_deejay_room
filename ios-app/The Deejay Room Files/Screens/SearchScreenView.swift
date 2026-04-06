@@ -76,6 +76,14 @@ struct SearchScreenView: View {
             }
             .navigationTitle("record store")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        NavigationLink(destination: FavoritesView()) {
+                            Image(systemName: "heart.fill")
+                                .foregroundStyle(Color(hex: "#9b7fc0"))
+                        }
+                    }
+                }
         }
         .ignoresSafeArea()
     }

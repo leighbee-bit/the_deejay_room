@@ -110,4 +110,27 @@ class APIService {
         }
         return false
     }
+    
+    func getAllFavorites() async throws -> [Album] {
+        let urlString = "\(baseURL)/api/favorites"
+        guard let url = URL(string: urlString) else {
+            throw URLError(.badURL)
+        }
+        
+        let (data, _) = try await URLSession.shared.data(from: url)
+        
+        if let results = try JSONSerialization.jsonObject(with: data) as? [[String: Any]] {
+            return results.compactMap { result in
+                guard let id = result["discogsId"] as? String,
+                      let title = result["title"] as? String,
+                      let artist = result["artist"] as? String else { return nil }
+                let year = result["year"] as? Int ?? 0
+                let imageURLString = result["imageUrl"] as? String ?? ""
+                
+                return Album(id: id, title: title, artist: artist, year: String(year), thumbUrl: imageURLString, coverImageUrl: imageURLString)
+                
+            }
+        }
+        return []
+    }
 }
