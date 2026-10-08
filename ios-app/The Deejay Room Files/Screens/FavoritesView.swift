@@ -31,20 +31,38 @@ struct FavoritesView: View {
                         .foregroundStyle(Color(hex: "#9b7fc0"))
                 }
             } else {
-                ScrollView {
-                    LazyVStack(spacing: 0) {
-                        ForEach(favorites) { album in
+                List {
+                    ForEach(favorites) { album in
+                        // Hidden link so List doesn't add a second chevron next to AlbumRowView's own
+                        ZStack {
                             NavigationLink(destination: AlbumDetailView(album: album)) {
-                                AlbumRowView(album: album)
-                                    .padding(.horizontal, 16)
-                                    .background(Color(hex: "#e3d0f2"))
+                                EmptyView()
                             }
-                            Divider()
-                                .background(Color(hex: "#c9b0e8"))
-                                .padding(.leading, 100)
+                            .opacity(0)
+                            AlbumRowView(album: album)
+                        }
+                        .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
+                        .listRowBackground(Color(hex: "#e3d0f2"))
+                        .listRowSeparatorTint(Color(hex: "#c9b0e8"))
+                        .alignmentGuide(.listRowSeparatorLeading) { _ in 84 }
+                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                            Button(role: .destructive) {
+                                Task { await removeFavorite(album) }
+                            } label: {
+                                Label("remove", systemImage: "heart.slash")
+                            }
+                        }
+                        .contextMenu {
+                            Button(role: .destructive) {
+                                Task { await removeFavorite(album) }
+                            } label: {
+                                Label("remove from favorites", systemImage: "heart.slash")
+                            }
                         }
                     }
                 }
+                .listStyle(.plain)
+                .scrollContentBackground(.hidden)
             }
             
             if !errorMessage.isEmpty {
@@ -74,4 +92,19 @@ struct FavoritesView: View {
             }
             isLoading = false
         }
+
+    func removeFavorite(_ album: Album) async {
+        // Remove right away so the swipe feels instant; put it back if the server call fails
+        guard let index = favorites.firstIndex(of: album) else { return }
+        withAnimation { _ = favorites.remove(at: index) }
+        errorMessage = ""
+        do {
+            let success = try await APIService.shared.removeFavorite(discogsId: album.id)
+            if !success { throw URLError(.badServerResponse) }
+        } catch {
+            print("Failed to remove favorite: \(error)")
+            withAnimation { favorites.insert(album, at: min(index, favorites.count)) }
+            errorMessage = "Failed to remove favorite"
+        }
+    }
 }
