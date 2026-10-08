@@ -61,9 +61,15 @@ struct FavoritesView: View {
     }
     func loadFavorites() async {
             isLoading = true
+            errorMessage = ""
             do {
                 favorites = try await APIService.shared.getAllFavorites()
+            } catch is CancellationError {
+                // View disappeared mid-load; not a real failure
+            } catch let error as URLError where error.code == .cancelled {
+                // Same as above, surfaced by URLSession
             } catch {
+                print("Failed to load favorites: \(error)")
                 errorMessage = "Failed to load favorites"
             }
             isLoading = false

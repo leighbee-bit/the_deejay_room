@@ -117,8 +117,13 @@ class APIService {
             throw URLError(.badURL)
         }
         
-        let (data, _) = try await URLSession.shared.data(from: url)
-        
+        let (data, response) = try await URLSession.shared.data(from: url)
+
+        if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
+            print("getAllFavorites status \(httpResponse.statusCode): \(String(data: data, encoding: .utf8) ?? "")")
+            throw URLError(.badServerResponse)
+        }
+
         if let results = try JSONSerialization.jsonObject(with: data) as? [[String: Any]] {
             return results.compactMap { result in
                 guard let id = result["discogsId"] as? String,
