@@ -15,22 +15,9 @@
 		2D62364F2F74AC8200475EE5 /* The Deejay Room Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "The Deejay Room Launch Screen.storyboard"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		2D62364C2F74A6E000475EE5 /* Exceptions for "The Deejay Room Files" folder in "The Deejay Room" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 2D6236062F72529600475EE5 /* The Deejay Room */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		2D6236092F72529600475EE5 /* The Deejay Room Files */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				2D62364C2F74A6E000475EE5 /* Exceptions for "The Deejay Room Files" folder in "The Deejay Room" target */,
-			);
 			path = "The Deejay Room Files";
 			sourceTree = "<group>";
 		};
