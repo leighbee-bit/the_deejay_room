@@ -74,7 +74,6 @@
 				2D6236032F72529600475EE5 /* Sources */,
 				2D6236042F72529600475EE5 /* Frameworks */,
 				2D6236052F72529600475EE5 /* Resources */,
-				2D6236A62F76E09500475EE5 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -135,25 +134,6 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		2D6236A62F76E09500475EE5 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nipconfig getifaddr en0 \n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		2D6236032F72529600475EE5 /* Sources */ = {

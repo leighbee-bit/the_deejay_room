@@ -88,10 +88,8 @@ class APIService {
         
         let (data, _) = try await URLSession.shared.data(from: url)
         
-        if let result = try JSONSerialization.jsonObject(with: data) as? Bool {
-            return result
-        }
-        return false
+        // The endpoint returns a bare `true`/`false`, which JSONSerialization rejects by default
+        return try JSONDecoder().decode(Bool.self, from: data)
     }
     
     func removeFavorite(discogsId: String) async throws -> Bool {

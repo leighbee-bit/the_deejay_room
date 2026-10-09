@@ -10,6 +10,7 @@ Built with a **SwiftUI** iOS app and a **Spring Boot** REST API backed by **Post
 - **Album details:** cover art, artist and release year
 - **Favorites:** save albums from the detail screen and view them all on the Favorites page
 - **Swipe to remove:** swipe left (or long-press) on a favorite to remove it
+- **Star ratings:** rate any album 1–5 stars from its detail screen; tap the same star again to clear it
 - **Server-side API key:** the app never sees the Discogs token. All Discogs requests go through the backend.
 
 ## Tech Stack
@@ -37,14 +38,14 @@ SwiftUI app  ──HTTP──▶  Spring Boot API  ──JDBC──▶  PostgreS
 ## Project Structure
 
 ```
-ios-app/
+deejay-room-ios-app/
 ├── The Deejay Room.xcodeproj
 ├── Config.swift.example              template for the backend address
 └── The Deejay Room Files/
-    ├── Screens/                      SwiftUI views (search, results, detail, favorites)
+    ├── Screens/                      SwiftUI views (search, results, detail, favorites, star rating)
     └── Mechanics and Assets/         APIService, Album model, Config, assets
 
-backend/
+deejay-room-backend/
 └── src/main/java/org/leighbeebit/music_clinic_backend/
     ├── controllers/                  REST endpoints
     ├── services/                     business logic + Discogs client
@@ -85,7 +86,7 @@ For Amazon RDS, use your instance endpoint and add `?sslmode=require` to `DB_URL
 Then start the backend:
 
 ```bash
-cd backend
+cd deejay-room-backend
 ./mvnw spring-boot:run
 ```
 
@@ -96,7 +97,7 @@ The API runs on `http://localhost:8080`.
 `Config.swift` holds the backend address. It's gitignored, so create your own copy from the template:
 
 ```bash
-cp ios-app/Config.swift.example "ios-app/The Deejay Room Files/Mechanics and Assets/Config.swift"
+cp deejay-room-ios-app/Config.swift.example "deejay-room-ios-app/The Deejay Room Files/Mechanics and Assets/Config.swift"
 ```
 
 - **iOS Simulator:** keep `http://localhost:8080`.
@@ -104,7 +105,7 @@ cp ios-app/Config.swift.example "ios-app/The Deejay Room Files/Mechanics and Ass
 
 ### 4. Run the app
 
-Open `ios-app/The Deejay Room.xcodeproj` in Xcode, choose a simulator or your device, and press **Run**. To run on a physical iPhone, select your own team under *Signing & Capabilities*.
+Open `deejay-room-ios-app/The Deejay Room.xcodeproj` in Xcode, choose a simulator or your device, and press **Run**. To run on a physical iPhone, select your own team under *Signing & Capabilities*.
 
 ## API Reference
 
@@ -117,12 +118,12 @@ Open `ios-app/The Deejay Room.xcodeproj` in Xcode, choose a simulator or your de
 | GET | `/api/favorites/{discogsId}` | Get a favorite |
 | GET | `/api/favorites/{discogsId}/exists` | Check whether an album is favorited |
 | DELETE | `/api/favorites/{discogsId}` | Remove a favorite |
-| POST | `/api/album_ratings` | Rate an album |
+| POST | `/api/album_ratings` | Rate an album, or update its existing rating (1–5) |
 | GET | `/api/album_ratings` | List ratings |
-| GET | `/api/album_ratings/{discogsId}` | Get an album's rating |
+| GET | `/api/album_ratings/{discogsId}` | Get an album's rating (404 if unrated) |
 | GET | `/api/album_ratings/{discogsId}/exists` | Check whether an album is rated |
-
-Album ratings are supported by the API but don't have a screen in the app yet.
+| PUT | `/api/album_ratings/{discogsId}?rating=` | Update an existing rating |
+| DELETE | `/api/album_ratings/{discogsId}` | Remove a rating |
 
 ## Credits
 
