@@ -1,6 +1,7 @@
 package org.leighbeebit.music_clinic_backend.services;
 
 
+import jakarta.transaction.Transactional;
 import org.leighbeebit.music_clinic_backend.entities.AlbumRating;
 import org.leighbeebit.music_clinic_backend.repositories.AlbumRatingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,14 @@ public class AlbumRatingService {
     @Autowired
     private AlbumRatingRepository albumRatingRepository;
 
+    //Creates the rating, or updates it if this album was already rated
     public AlbumRating rateAlbum(AlbumRating rating) {
-        return albumRatingRepository.save(rating);
+        return albumRatingRepository.findByDiscogsId(rating.getDiscogsId())
+                .map(existing -> {
+                    existing.setRating(rating.getRating());
+                    return albumRatingRepository.save(existing);
+                })
+                .orElseGet(() -> albumRatingRepository.save(rating));
     }
 
     public List<AlbumRating> getAllAlbumRatings() {
@@ -36,5 +43,10 @@ public class AlbumRatingService {
                 .orElseThrow(() -> new RuntimeException("Rating not found"));
         existing.setRating(newRating);
         return albumRatingRepository.save(existing);
+    }
+
+    @Transactional
+    public void removeRating(String discogsId) {
+        albumRatingRepository.deleteByDiscogsId(discogsId);
     }
 }

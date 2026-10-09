@@ -18,6 +18,9 @@ public class AlbumRatingController {
 
     @PostMapping
     public ResponseEntity<AlbumRating> rateAlbum(@RequestBody AlbumRating rating) {
+        if (!isValidRating(rating.getRating())) {
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok(albumRatingService.rateAlbum(rating));
     }
 
@@ -40,6 +43,20 @@ public class AlbumRatingController {
 
     @PutMapping("/{discogsId}")
     public ResponseEntity<AlbumRating> updateRating(@PathVariable String discogsId, @RequestParam int rating) {
+        if (!isValidRating(rating)) {
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok(albumRatingService.updateRating(discogsId, rating));
+    }
+
+    @DeleteMapping("/{discogsId}")
+    public ResponseEntity<Void> removeRating(@PathVariable String discogsId) {
+        albumRatingService.removeRating(discogsId);
+        return ResponseEntity.noContent().build();
+    }
+
+    //Ratings are 1-5 stars
+    private boolean isValidRating(Integer rating) {
+        return rating != null && rating >= 1 && rating <= 5;
     }
 }

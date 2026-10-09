@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface AlbumRatingRepository extends JpaRepository<AlbumRating, Long> {
     Optional<AlbumRating> findByDiscogsId(String discogsId);
     boolean existsByDiscogsId(String discogsId);
+    void deleteByDiscogsId(String discogsId);
 }
